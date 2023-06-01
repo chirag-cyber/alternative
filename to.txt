@@ -1,0 +1,129 @@
+
+{
+    "compilerOptions":{
+        "target":"ESNext",
+        "watch":true
+    }
+}
+
+
+
+Todo App:
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List</title>
+  </head>
+  <body>
+    <h1>To-Do List</h1>
+    <input id="task-input" type="text" placeholder="Add new task" />
+    <button id="add-btn">Add</button>
+    <ul id="task-list"></ul>
+
+    <script src="../src/To-Do-Application.js"></script>
+  </body>
+</html>
+
+interface Task {
+    id: number;
+    content: string;
+    completed: boolean;
+  }
+  
+  class TaskManager {
+    private static instance: TaskManager;
+    private tasks: Task[];
+  
+    private constructor() {
+      this.tasks = this.loadTasksFromLocalStorage();
+    }
+  
+    public static getInstance(): TaskManager {
+      if (!TaskManager.instance) {
+        TaskManager.instance = new TaskManager();
+      }
+      return TaskManager.instance;
+    }
+  
+    public getTasks(): Task[] {
+      return this.tasks;
+    }
+  
+    public addTask(content: string): void {
+      const newTask: Task = {
+        id: new Date().getTime(),
+        content,
+        completed: false,
+      };
+      this.tasks.push(newTask);
+      this.saveTasksToLocalStorage();
+    }
+  
+    public removeTask(id: number): void {
+      const index = this.tasks.findIndex((task) => task.id === id);
+      if (index !== -1) {
+        this.tasks.splice(index, 1);
+        this.saveTasksToLocalStorage();
+      }
+    }
+  
+    public toggleTask(id: number): void {
+      const task = this.tasks.find((task) => task.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        this.saveTasksToLocalStorage();
+      }
+    }
+  
+    private saveTasksToLocalStorage(): void {
+      localStorage.setItem("tasks", JSON.stringify(this.tasks));
+    }
+  
+    private loadTasksFromLocalStorage(): Task[] {
+      const tasksString = localStorage.getItem("tasks");
+      return tasksString ? JSON.parse(tasksString) : [];
+    }
+  }
+  
+  const taskManager = TaskManager.getInstance();
+  const taskList = document.getElementById("task-list") as HTMLUListElement;
+  const taskInput = document.getElementById("task-input") as HTMLInputElement;
+  const addBtn = document.getElementById("add-btn") as HTMLButtonElement;
+  
+  function renderTasks(): void {
+    taskList.innerHTML = "";
+    const tasks = taskManager.getTasks();
+    tasks.forEach((task) => {
+      const li = document.createElement("li");
+      li.innerText = task.content;
+      if (task.completed) {
+        li.classList.add("completed");
+      }
+      li.addEventListener("click", () => {
+        li.classList.toggle("completed");
+        taskManager.toggleTask(task.id);
+      });
+      const removeBtn = document.createElement("button");
+      removeBtn.innerText = "Remove";
+      removeBtn.addEventListener("click", () => {
+        taskList.removeChild(li);
+        taskManager.removeTask(task.id);
+      });
+      li.appendChild(removeBtn);
+      taskList.appendChild(li);
+    });
+  }
+  
+  addBtn.addEventListener("click", () => {
+    const content = taskInput.value.trim();
+    if (content) {
+      taskManager.addTask(content);
+      taskInput.value = "";
+      renderTasks();
+    }
+  });
+  
+  renderTasks();
