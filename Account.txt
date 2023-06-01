@@ -1,0 +1,100 @@
+Account:
+
+class Transaction {
+    private _val: number;
+
+    constructor(value: number) {
+        this._val = value;
+    }
+
+    set Value(value: number) {
+        this._val = value;
+    }
+
+    get Value(): number {
+        return this._val;
+    }
+}
+
+class Account {
+    private _accNo: number;
+    private _balance: number;
+
+    constructor(acc: number) {
+        this._accNo = acc;
+        this._balance = 0;
+    }
+
+    process(trans: Transaction) {
+        this._balance = this._balance + trans.Value;
+    }
+
+    details(): void {
+        console.log("Account No.", this._accNo, "currently has a balance of", this._balance);
+    }
+
+    get AccountNo() : number {
+        return this._accNo;
+    }
+
+    get Balance() : number {
+        return this._balance;
+    }
+}
+
+class FilteredAccount extends Account {
+    private _total: number;
+    private _failed: number;
+
+    constructor(accNo: number) {
+        super(accNo);
+        
+        this._total = 0;
+        this._failed = 0;
+    }
+
+    process(trans: Transaction) {
+        this._total++;
+
+        if (trans.Value != 0)
+            super.process(trans);
+        else
+            this._failed++;
+    }
+
+    efficiency():void {
+        if (this._total == 0) {
+            console.log("No Transaction Made Yet");
+        }
+        else {
+            let percent: number = (this._failed*100)/this._total;
+            console.log(percent,"% transaction were 0 and filtered Successfully");
+        }
+    }
+
+    get Total(): number {
+        return this._total;
+    }
+
+    get Failed(): number {
+        return this._failed;
+    }
+}
+
+let acc = new FilteredAccount(6);
+let trans = new Transaction(500)
+acc.process(trans);
+trans.Value = -100;
+acc.process(trans);
+trans.Value = 0;
+acc.process(trans);
+trans.Value = 200;
+acc.process(trans);
+trans.Value = 0;
+acc.process(trans);
+console.log("Account No:", acc.AccountNo);
+console.log("Current Balance:", acc.Balance);
+console.log("Total Transactions:", acc.Total);
+console.log("Zero Transactiona:", acc.Failed);
+acc.details();
+acc.efficiency();

@@ -1,0 +1,33 @@
+Safe Array:
+
+class safeArray{
+    private size: number =5;
+    private arr : number[] = [];
+    private static attempt: number = 0;
+    private static att : number[] = [];
+    putElement(index: number, value: number): void{
+        if(this.size>index){
+            this.arr[index] = value;
+        }
+        else{
+            safeArray.attempt+=1;
+            safeArray.att.push(index);
+            console.log(` No valid ${safeArray.attempt} failed attempt and invalid attempts are ${safeArray.att}`)
+        }
+    }
+    getElement(index : number): number{
+        if(index<this.size){
+            return this.arr[index];
+        }
+        else{
+            return -1;
+        }
+    }
+
+} 
+let sa1=new safeArray(); // define a SafeArray object 
+let temp = 125; // define an int value 
+sa1.putElement(3, temp); // insert value of temp into array at index 3 
+temp = sa1.getElement(3); // obtain value from array at index 3 
+sa1.putElement(27, temp); // insert value of temp into array at index 27 
+sa1.putElement(7, temp); // insert value of temp into array at index 7

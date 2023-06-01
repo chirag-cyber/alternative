@@ -1,0 +1,25 @@
+Toolbooth:
+class tollBooth{
+    private static car: number = 0;
+    private static pay: number = 0;
+    payingCAr() : void {
+        tollBooth.car += 1;
+        tollBooth.pay += 50;
+    }
+    noPayingCar() : void {
+        tollBooth.car += 1;
+    }
+    display() : void {
+        console.log(tollBooth.car, tollBooth.pay)
+    }
+    sampleInput(...args : string[]) : void {
+        args.forEach((n) => n === 'p' ? this.payingCAr() : this.noPayingCar());
+        this.display();
+    }
+}
+
+
+let obj1 = new tollBooth();
+obj1.sampleInput('p','p','n','p','n')
+// obj1.sampleInput('p','p','n','p','p','n','p')
+// obj1.sampleInput('p','p','n','p','n','p','p','p','n')
