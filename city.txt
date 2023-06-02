@@ -1,0 +1,28 @@
+let contentArray: Object[] = [{
+    "day 1": "Reach the destination",
+}, {
+    "day 2": "City tour in a company tourist bus"
+}, {
+    "day 2": "Breakfast & dinner"
+}, {
+    "day 3": "visit chang-la"
+}, {
+    "day 4": "Back to your home"
+}];
+let value: string = "";
+let dropdown = document.getElementById("select") as HTMLSelectElement;
+let div = document.getElementById("content") as HTMLDivElement;
+dropdown.addEventListener("change", () => {
+    div.innerHTML = "";
+
+    for (let i = 0; i < contentArray.length; i++) {
+        let obj: Object = contentArray[i];
+
+        if (Object.keys(obj)[0] == dropdown.value) {
+            value = obj[dropdown.value];
+            let h = document.createElement('h2');
+            h.innerHTML = value;
+            div.append(h);
+        }
+    }
+});
